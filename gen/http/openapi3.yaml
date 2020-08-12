@@ -4,7 +4,7 @@ info:
   description: Service for getting user info
   version: "1.0"
 servers:
-- url: localhost:8000
+- url: http://localhost:8000
 paths:
   /openapi.json:
     get:
@@ -37,18 +37,12 @@ paths:
                 - id: 3710267978346445328
                   location: Non excepturi sint recusandae voluptas voluptas.
                   name: Qui accusamus suscipit qui sed eveniet saepe.
-                - id: 3710267978346445328
-                  location: Non excepturi sint recusandae voluptas voluptas.
-                  name: Qui accusamus suscipit qui sed eveniet saepe.
-                - id: 3710267978346445328
-                  location: Non excepturi sint recusandae voluptas voluptas.
-                  name: Qui accusamus suscipit qui sed eveniet saepe.
-                id: 14001894237254503833
+                id: 16319173389184894208
                 latestCompany:
                   id: 3710267978346445328
                   location: Non excepturi sint recusandae voluptas voluptas.
                   name: Qui accusamus suscipit qui sed eveniet saepe.
-                name: Praesentium officia quas eos consectetur.
+                name: Voluptates deserunt quam aut.
 components:
   schemas:
     User:
@@ -66,19 +60,16 @@ components:
           - id: 3710267978346445328
             location: Non excepturi sint recusandae voluptas voluptas.
             name: Qui accusamus suscipit qui sed eveniet saepe.
-          - id: 3710267978346445328
-            location: Non excepturi sint recusandae voluptas voluptas.
-            name: Qui accusamus suscipit qui sed eveniet saepe.
         id:
           type: integer
           description: ID is the unique id of the user
-          example: 6263714387778688092
+          example: 16378066022428034392
         latestCompany:
           $ref: '#/components/schemas/UserCompany'
         name:
           type: string
           description: Name of user
-          example: Necessitatibus ipsum dolorem maiores harum hic.
+          example: Nihil aperiam ut et cupiditate.
       example:
         companies:
         - id: 3710267978346445328
@@ -93,12 +84,12 @@ components:
         - id: 3710267978346445328
           location: Non excepturi sint recusandae voluptas voluptas.
           name: Qui accusamus suscipit qui sed eveniet saepe.
-        id: 16378066022428034392
+        id: 5597118647794052275
         latestCompany:
           id: 3710267978346445328
           location: Non excepturi sint recusandae voluptas voluptas.
           name: Qui accusamus suscipit qui sed eveniet saepe.
-        name: Nihil aperiam ut et cupiditate.
+        name: Itaque eos perspiciatis repellendus ut et.
       required:
       - id
       - name
@@ -110,19 +101,19 @@ components:
         id:
           type: integer
           description: ID is the unique id of the company
-          example: 6505154084201219324
+          example: 15370179535470848482
         location:
           type: string
           description: Location of company
-          example: Tempore quos fuga cumque rerum at.
+          example: A eum aut.
         name:
           type: string
           description: Name of company
-          example: Minima beatae illo rerum.
+          example: Ullam sed pariatur alias ea ex dicta.
       example:
-        id: 1919750260669928550
-        location: Eveniet et inventore voluptates necessitatibus quos nobis.
-        name: Fugiat in dolor.
+        id: 14599917217388997151
+        location: Voluptates dolor molestiae accusantium reprehenderit assumenda.
+        name: Impedit expedita.
       required:
       - id
       - name
