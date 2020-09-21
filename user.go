@@ -26,12 +26,36 @@ func (s *usersrvc) Get(ctx context.Context) (res *user.User, err error) {
 	companies = append(companies, &user.Company{ID: 1, Name: "Symantec", Location: "India"})
 	companies = append(companies, &user.Company{ID: 2, Name: "Red Hat", Location: "India"})
 
+	// <------Case 1 works------->
+
+	// res = &user.User{
+	// 	ID:   1,
+	// 	Name: "abc",
+	// 	LatestCompany: &user.Company{
+	// 		Name: "Redhat",
+	// 	},
+	// 	Companies: companies,
+	// }
+
+	// <------Case 2 works------->
+
+	// res = &user.User{
+	// 	ID:   1,
+	// 	Name: "abc",
+	// 	LatestCompany: &user.Company{
+	// 		Name: "Redhat",
+	// 	},
+	// 	// Companies: companies,
+	// }
+
+	// <------Case 3 works------->
+
 	res = &user.User{
 		ID:   1,
 		Name: "abc",
-		LatestCompany: &user.Company{
-			Name: "Redhat",
-		},
+		// LatestCompany: &user.Company{
+		// 	Name: "Redhat",
+		// },
 		Companies: companies,
 	}
 
