@@ -15,6 +15,18 @@ import (
 	goahttp "goa.design/goa/v3/http"
 )
 
+// EncodeGet2Response returns an encoder for responses returned by the user
+// get2 endpoint.
+func EncodeGet2Response(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*userviews.User)
+		enc := encoder(ctx, w)
+		body := NewGet2ResponseBodyV1(res.Projected)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
 // EncodeGetResponse returns an encoder for responses returned by the user get
 // endpoint.
 func EncodeGetResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {

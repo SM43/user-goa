@@ -15,14 +15,26 @@ import (
 
 // Client is the "user" service client.
 type Client struct {
-	GetEndpoint goa.Endpoint
+	Get2Endpoint goa.Endpoint
+	GetEndpoint  goa.Endpoint
 }
 
 // NewClient initializes a "user" service client given the endpoints.
-func NewClient(get goa.Endpoint) *Client {
+func NewClient(get2, get goa.Endpoint) *Client {
 	return &Client{
-		GetEndpoint: get,
+		Get2Endpoint: get2,
+		GetEndpoint:  get,
 	}
+}
+
+// Get2 calls the "get2" endpoint of the "user" service.
+func (c *Client) Get2(ctx context.Context) (res *User, err error) {
+	var ires interface{}
+	ires, err = c.Get2Endpoint(ctx, nil)
+	if err != nil {
+		return
+	}
+	return ires.(*User), nil
 }
 
 // Get calls the "get" endpoint of the "user" service.

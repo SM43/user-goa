@@ -17,6 +17,9 @@ import (
 
 // Client lists the user service endpoint HTTP clients.
 type Client struct {
+	// Get2 Doer is the HTTP client used to make requests to the get2 endpoint.
+	Get2Doer goahttp.Doer
+
 	// Get Doer is the HTTP client used to make requests to the get endpoint.
 	GetDoer goahttp.Doer
 
@@ -40,12 +43,32 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
+		Get2Doer:            doer,
 		GetDoer:             doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
 		host:                host,
 		decoder:             dec,
 		encoder:             enc,
+	}
+}
+
+// Get2 returns an endpoint that makes HTTP requests to the user service get2
+// server.
+func (c *Client) Get2() goa.Endpoint {
+	var (
+		decodeResponse = DecodeGet2Response(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildGet2Request(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.Get2Doer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("user", "get2", err)
+		}
+		return decodeResponse(resp)
 	}
 }
 

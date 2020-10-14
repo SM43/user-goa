@@ -19,6 +19,63 @@ import (
 	goahttp "goa.design/goa/v3/http"
 )
 
+// BuildGet2Request instantiates a HTTP request object with method and path set
+// to call the "user" service "get2" endpoint
+func (c *Client) BuildGet2Request(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: Get2UserPath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("user", "get2", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// DecodeGet2Response returns a decoder for responses returned by the user get2
+// endpoint. restoreBody controls whether the response body should be restored
+// after having been read.
+func DecodeGet2Response(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body Get2ResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("user", "get2", err)
+			}
+			p := NewGet2UserOK(&body)
+			view := "v1"
+			vres := &userviews.User{Projected: p, View: view}
+			if err = userviews.ValidateUser(vres); err != nil {
+				return nil, goahttp.ErrValidationError("user", "get2", err)
+			}
+			res := user.NewUser(vres)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("user", "get2", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildGetRequest instantiates a HTTP request object with method and path set
 // to call the "user" service "get" endpoint
 func (c *Client) BuildGetRequest(ctx context.Context, v interface{}) (*http.Request, error) {
@@ -62,7 +119,7 @@ func DecodeGetResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody
 				return nil, goahttp.ErrDecodingError("user", "get", err)
 			}
 			p := NewGetUserOK(&body)
-			view := "default"
+			view := "v1"
 			vres := &userviews.User{Projected: p, View: view}
 			if err = userviews.ValidateUser(vres); err != nil {
 				return nil, goahttp.ErrValidationError("user", "get", err)

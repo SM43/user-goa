@@ -12,6 +12,19 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
+// Get2ResponseBody is the type of the "user" service "get2" endpoint HTTP
+// response body.
+type Get2ResponseBody struct {
+	// ID is the unique id of the user
+	ID *uint `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Name of user
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// latest company of user
+	LatestCompany *CompanyResponseBody `form:"latestCompany,omitempty" json:"latestCompany,omitempty" xml:"latestCompany,omitempty"`
+	// all companies user worked at
+	Companies []*CompanyResponseBody `form:"companies,omitempty" json:"companies,omitempty" xml:"companies,omitempty"`
+}
+
 // GetResponseBody is the type of the "user" service "get" endpoint HTTP
 // response body.
 type GetResponseBody struct {
@@ -33,6 +46,22 @@ type CompanyResponseBody struct {
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	// Location of company
 	Location *string `form:"location,omitempty" json:"location,omitempty" xml:"location,omitempty"`
+}
+
+// NewGet2UserOK builds a "user" service "get2" endpoint result from a HTTP
+// "OK" response.
+func NewGet2UserOK(body *Get2ResponseBody) *userviews.UserView {
+	v := &userviews.UserView{
+		ID:   body.ID,
+		Name: body.Name,
+	}
+	v.LatestCompany = unmarshalCompanyResponseBodyToUserviewsCompanyView(body.LatestCompany)
+	v.Companies = make([]*userviews.CompanyView, len(body.Companies))
+	for i, val := range body.Companies {
+		v.Companies[i] = unmarshalCompanyResponseBodyToUserviewsCompanyView(val)
+	}
+
+	return v
 }
 
 // NewGetUserOK builds a "user" service "get" endpoint result from a HTTP "OK"

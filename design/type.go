@@ -32,6 +32,11 @@ var User = ResultType("application/vnd.user.user", func() {
 	Attribute("latestCompany", Company, "latest company of user")
 	Attribute("companies", ArrayOf(Company), "all companies user worked at")
 
+	View("v1", func() {
+		Attribute("id")
+		Attribute("name")
+	})
+
 	View("default", func() {
 		Attribute("id")
 		Attribute("name")

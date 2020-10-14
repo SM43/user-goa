@@ -44,6 +44,10 @@ type CompanyView struct {
 var (
 	// UserMap is a map of attribute names in result type User indexed by view name.
 	UserMap = map[string][]string{
+		"v1": []string{
+			"id",
+			"name",
+		},
 		"default": []string{
 			"id",
 			"name",
@@ -68,10 +72,24 @@ var (
 // ValidateUser runs the validations defined on the viewed result type User.
 func ValidateUser(result *User) (err error) {
 	switch result.View {
+	case "v1":
+		err = ValidateUserViewV1(result.Projected)
 	case "default", "":
 		err = ValidateUserView(result.Projected)
 	default:
-		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"v1", "default"})
+	}
+	return
+}
+
+// ValidateUserViewV1 runs the validations defined on UserView using the "v1"
+// view.
+func ValidateUserViewV1(result *UserView) (err error) {
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "result"))
 	}
 	return
 }

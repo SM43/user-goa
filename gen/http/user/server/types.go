@@ -11,6 +11,15 @@ import (
 	userviews "github.com/sm43/user-goa/gen/user/views"
 )
 
+// Get2ResponseBodyV1 is the type of the "user" service "get2" endpoint HTTP
+// response body.
+type Get2ResponseBodyV1 struct {
+	// ID is the unique id of the user
+	ID uint `form:"id" json:"id" xml:"id"`
+	// Name of user
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
 // GetResponseBody is the type of the "user" service "get" endpoint HTTP
 // response body.
 type GetResponseBody struct {
@@ -38,6 +47,16 @@ type CompanyResponseBody struct {
 	Name string `form:"name" json:"name" xml:"name"`
 	// Location of company
 	Location string `form:"location" json:"location" xml:"location"`
+}
+
+// NewGet2ResponseBodyV1 builds the HTTP response body from the result of the
+// "get2" endpoint of the "user" service.
+func NewGet2ResponseBodyV1(res *userviews.UserView) *Get2ResponseBodyV1 {
+	body := &Get2ResponseBodyV1{
+		ID:   *res.ID,
+		Name: *res.Name,
+	}
+	return body
 }
 
 // NewGetResponseBody builds the HTTP response body from the result of the

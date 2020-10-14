@@ -16,6 +16,8 @@ import (
 // The user service provide user details.
 type Service interface {
 	// Returns User details
+	Get2(context.Context) (res *User, err error)
+	// Returns User details
 	Get(context.Context) (res *User, err error)
 }
 
@@ -27,9 +29,9 @@ const ServiceName = "user"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [1]string{"get"}
+var MethodNames = [2]string{"get2", "get"}
 
-// User is the result type of the user service get method.
+// User is the result type of the user service get2 method.
 type User struct {
 	// ID is the unique id of the user
 	ID uint
@@ -52,14 +54,44 @@ type Company struct {
 
 // NewUser initializes result type User from viewed result type User.
 func NewUser(vres *userviews.User) *User {
-	return newUser(vres.Projected)
+	var res *User
+	switch vres.View {
+	case "v1":
+		res = newUserV1(vres.Projected)
+	case "default", "":
+		res = newUser(vres.Projected)
+	}
+	return res
 }
 
 // NewViewedUser initializes viewed result type User from result type User
 // using the given view.
 func NewViewedUser(res *User, view string) *userviews.User {
-	p := newUserView(res)
-	return &userviews.User{Projected: p, View: "default"}
+	var vres *userviews.User
+	switch view {
+	case "v1":
+		p := newUserViewV1(res)
+		vres = &userviews.User{Projected: p, View: "v1"}
+	case "default", "":
+		p := newUserView(res)
+		vres = &userviews.User{Projected: p, View: "default"}
+	}
+	return vres
+}
+
+// newUserV1 converts projected type User to service type User.
+func newUserV1(vres *userviews.UserView) *User {
+	res := &User{}
+	if vres.ID != nil {
+		res.ID = *vres.ID
+	}
+	if vres.Name != nil {
+		res.Name = *vres.Name
+	}
+	if vres.LatestCompany != nil {
+		res.LatestCompany = newCompany(vres.LatestCompany)
+	}
+	return res
 }
 
 // newUser converts projected type User to service type User.
@@ -81,6 +113,16 @@ func newUser(vres *userviews.UserView) *User {
 		res.LatestCompany = newCompanyTiny(vres.LatestCompany)
 	}
 	return res
+}
+
+// newUserViewV1 projects result type User to projected type UserView using the
+// "v1" view.
+func newUserViewV1(res *User) *userviews.UserView {
+	vres := &userviews.UserView{
+		ID:   &res.ID,
+		Name: &res.Name,
+	}
+	return vres
 }
 
 // newUserView projects result type User to projected type UserView using the

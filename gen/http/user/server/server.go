@@ -19,6 +19,7 @@ import (
 // Server lists the user service endpoint HTTP handlers.
 type Server struct {
 	Mounts []*MountPoint
+	Get2   http.Handler
 	Get    http.Handler
 }
 
@@ -55,10 +56,12 @@ func New(
 ) *Server {
 	return &Server{
 		Mounts: []*MountPoint{
+			{"Get2", "GET", "/user2"},
 			{"Get", "GET", "/user"},
 			{"./gen/http/openapi.json", "GET", "/openapi.json"},
 		},
-		Get: NewGetHandler(e.Get, mux, decoder, encoder, errhandler, formatter),
+		Get2: NewGet2Handler(e.Get2, mux, decoder, encoder, errhandler, formatter),
+		Get:  NewGetHandler(e.Get, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -67,15 +70,61 @@ func (s *Server) Service() string { return "user" }
 
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
+	s.Get2 = m(s.Get2)
 	s.Get = m(s.Get)
 }
 
 // Mount configures the mux to serve the user endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
+	MountGet2Handler(mux, h.Get2)
 	MountGetHandler(mux, h.Get)
 	MountGenHTTPOpenapiJSON(mux, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./gen/http/openapi.json")
 	}))
+}
+
+// MountGet2Handler configures the mux to serve the "user" service "get2"
+// endpoint.
+func MountGet2Handler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/user2", f)
+}
+
+// NewGet2Handler creates a HTTP handler which loads the HTTP request and calls
+// the "user" service "get2" endpoint.
+func NewGet2Handler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		encodeResponse = EncodeGet2Response(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "get2")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "user")
+		var err error
+		res, err := endpoint(ctx, nil)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
 }
 
 // MountGetHandler configures the mux to serve the "user" service "get"

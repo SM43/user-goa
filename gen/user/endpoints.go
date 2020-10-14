@@ -15,19 +15,35 @@ import (
 
 // Endpoints wraps the "user" service endpoints.
 type Endpoints struct {
-	Get goa.Endpoint
+	Get2 goa.Endpoint
+	Get  goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "user" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
-		Get: NewGetEndpoint(s),
+		Get2: NewGet2Endpoint(s),
+		Get:  NewGetEndpoint(s),
 	}
 }
 
 // Use applies the given middleware to all the "user" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
+	e.Get2 = m(e.Get2)
 	e.Get = m(e.Get)
+}
+
+// NewGet2Endpoint returns an endpoint function that calls the method "get2" of
+// service "user".
+func NewGet2Endpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		res, err := s.Get2(ctx)
+		if err != nil {
+			return nil, err
+		}
+		vres := NewViewedUser(res, "v1")
+		return vres, nil
+	}
 }
 
 // NewGetEndpoint returns an endpoint function that calls the method "get" of
@@ -38,7 +54,7 @@ func NewGetEndpoint(s Service) goa.Endpoint {
 		if err != nil {
 			return nil, err
 		}
-		vres := NewViewedUser(res, "default")
+		vres := NewViewedUser(res, "v1")
 		return vres, nil
 	}
 }

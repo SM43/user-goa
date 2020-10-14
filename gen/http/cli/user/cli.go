@@ -23,13 +23,13 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `user get
+	return `user (get2|get)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` user get` + "\n" +
+	return os.Args[0] + ` user get2` + "\n" +
 		""
 }
 
@@ -45,9 +45,12 @@ func ParseEndpoint(
 	var (
 		userFlags = flag.NewFlagSet("user", flag.ContinueOnError)
 
+		userGet2Flags = flag.NewFlagSet("get2", flag.ExitOnError)
+
 		userGetFlags = flag.NewFlagSet("get", flag.ExitOnError)
 	)
 	userFlags.Usage = userUsage
+	userGet2Flags.Usage = userGet2Usage
 	userGetFlags.Usage = userGetUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
@@ -84,6 +87,9 @@ func ParseEndpoint(
 		switch svcn {
 		case "user":
 			switch epn {
+			case "get2":
+				epf = userGet2Flags
+
 			case "get":
 				epf = userGetFlags
 
@@ -112,6 +118,9 @@ func ParseEndpoint(
 		case "user":
 			c := userc.NewClient(scheme, host, doer, enc, dec, restore)
 			switch epn {
+			case "get2":
+				endpoint = c.Get2()
+				data = nil
 			case "get":
 				endpoint = c.Get()
 				data = nil
@@ -132,12 +141,23 @@ Usage:
     %s [globalflags] user COMMAND [flags]
 
 COMMAND:
+    get2: Returns User details
     get: Returns User details
 
 Additional help:
     %s user COMMAND --help
 `, os.Args[0], os.Args[0])
 }
+func userGet2Usage() {
+	fmt.Fprintf(os.Stderr, `%s [flags] user get2
+
+Returns User details
+
+Example:
+    `+os.Args[0]+` user get2
+`, os.Args[0])
+}
+
 func userGetUsage() {
 	fmt.Fprintf(os.Stderr, `%s [flags] user get
 

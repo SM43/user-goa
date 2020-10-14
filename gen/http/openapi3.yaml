@@ -28,68 +28,112 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/GetResponseBody'
               example:
                 companies:
-                - id: 3710267978346445328
-                  location: Non excepturi sint recusandae voluptas voluptas.
-                  name: Qui accusamus suscipit qui sed eveniet saepe.
-                - id: 3710267978346445328
-                  location: Non excepturi sint recusandae voluptas voluptas.
-                  name: Qui accusamus suscipit qui sed eveniet saepe.
-                id: 16319173389184894208
+                - id: 15652828213867574851
+                  location: Et deleniti voluptates deserunt.
+                  name: Saepe blanditiis vitae quasi.
+                - id: 15652828213867574851
+                  location: Et deleniti voluptates deserunt.
+                  name: Saepe blanditiis vitae quasi.
+                - id: 15652828213867574851
+                  location: Et deleniti voluptates deserunt.
+                  name: Saepe blanditiis vitae quasi.
+                - id: 15652828213867574851
+                  location: Et deleniti voluptates deserunt.
+                  name: Saepe blanditiis vitae quasi.
+                id: 9906874151693549962
                 latestCompany:
-                  id: 3710267978346445328
-                  location: Non excepturi sint recusandae voluptas voluptas.
-                  name: Qui accusamus suscipit qui sed eveniet saepe.
-                name: Voluptates deserunt quam aut.
+                  name: Praesentium officia quas eos consectetur.
+                name: Assumenda architecto cum et quod.
+  /user2:
+    get:
+      tags:
+      - user
+      summary: get2 user
+      description: Returns User details
+      operationId: user#get2
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Get2ResponseBodyV1'
+              example:
+                id: 12778347463735241895
+                name: Esse debitis.
 components:
   schemas:
-    User:
+    Get2ResponseBodyV1:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID is the unique id of the user
+          example: 2762580632545096489
+        name:
+          type: string
+          description: Name of user
+          example: Eos perspiciatis repellendus ut et aut voluptas.
+      description: Get2ResponseBody result type (v1 view)
+      example:
+        id: 11330408712948978623
+        name: Neque est quisquam.
+      required:
+      - id
+      - name
+    GetResponseBody:
       type: object
       properties:
         companies:
           type: array
           items:
-            $ref: '#/components/schemas/UserCompany'
+            $ref: '#/components/schemas/UserCompany2'
           description: all companies user worked at
           example:
-          - id: 3710267978346445328
-            location: Non excepturi sint recusandae voluptas voluptas.
-            name: Qui accusamus suscipit qui sed eveniet saepe.
-          - id: 3710267978346445328
-            location: Non excepturi sint recusandae voluptas voluptas.
-            name: Qui accusamus suscipit qui sed eveniet saepe.
+          - id: 15652828213867574851
+            location: Et deleniti voluptates deserunt.
+            name: Saepe blanditiis vitae quasi.
+          - id: 15652828213867574851
+            location: Et deleniti voluptates deserunt.
+            name: Saepe blanditiis vitae quasi.
+          - id: 15652828213867574851
+            location: Et deleniti voluptates deserunt.
+            name: Saepe blanditiis vitae quasi.
+          - id: 15652828213867574851
+            location: Et deleniti voluptates deserunt.
+            name: Saepe blanditiis vitae quasi.
         id:
           type: integer
           description: ID is the unique id of the user
-          example: 16378066022428034392
+          example: 11652591273445952281
         latestCompany:
           $ref: '#/components/schemas/UserCompany'
         name:
           type: string
           description: Name of user
-          example: Nihil aperiam ut et cupiditate.
+          example: Dolores odit odit aperiam.
+      description: GetResponseBody result type (default view)
       example:
         companies:
-        - id: 3710267978346445328
-          location: Non excepturi sint recusandae voluptas voluptas.
-          name: Qui accusamus suscipit qui sed eveniet saepe.
-        - id: 3710267978346445328
-          location: Non excepturi sint recusandae voluptas voluptas.
-          name: Qui accusamus suscipit qui sed eveniet saepe.
-        - id: 3710267978346445328
-          location: Non excepturi sint recusandae voluptas voluptas.
-          name: Qui accusamus suscipit qui sed eveniet saepe.
-        - id: 3710267978346445328
-          location: Non excepturi sint recusandae voluptas voluptas.
-          name: Qui accusamus suscipit qui sed eveniet saepe.
-        id: 5597118647794052275
+        - id: 15652828213867574851
+          location: Et deleniti voluptates deserunt.
+          name: Saepe blanditiis vitae quasi.
+        - id: 15652828213867574851
+          location: Et deleniti voluptates deserunt.
+          name: Saepe blanditiis vitae quasi.
+        - id: 15652828213867574851
+          location: Et deleniti voluptates deserunt.
+          name: Saepe blanditiis vitae quasi.
+        - id: 15652828213867574851
+          location: Et deleniti voluptates deserunt.
+          name: Saepe blanditiis vitae quasi.
+        id: 15286478875011481673
         latestCompany:
-          id: 3710267978346445328
-          location: Non excepturi sint recusandae voluptas voluptas.
-          name: Qui accusamus suscipit qui sed eveniet saepe.
-        name: Itaque eos perspiciatis repellendus ut et.
+          name: Praesentium officia quas eos consectetur.
+        name: Consequatur ipsam quis.
       required:
       - id
       - name
@@ -98,22 +142,35 @@ components:
     UserCompany:
       type: object
       properties:
-        id:
-          type: integer
-          description: ID is the unique id of the company
-          example: 15370179535470848482
-        location:
-          type: string
-          description: Location of company
-          example: A eum aut.
         name:
           type: string
           description: Name of company
-          example: Ullam sed pariatur alias ea ex dicta.
+          example: Temporibus illum ut cupiditate voluptatibus.
       example:
-        id: 14599917217388997151
-        location: Voluptates dolor molestiae accusantium reprehenderit assumenda.
-        name: Impedit expedita.
+        name: Quo enim esse laboriosam perferendis non.
+      required:
+      - id
+      - name
+      - location
+    UserCompany2:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID is the unique id of the company
+          example: 16018091000447204358
+        location:
+          type: string
+          description: Location of company
+          example: Nobis voluptas quos sint.
+        name:
+          type: string
+          description: Name of company
+          example: Voluptatem ipsam ipsam voluptatum temporibus sit.
+      example:
+        id: 2146091552247203196
+        location: Repudiandae est suscipit non.
+        name: Qui voluptatem inventore molestiae ratione similique.
       required:
       - id
       - name

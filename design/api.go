@@ -17,9 +17,23 @@ var _ = API("User", func() {
 var _ = Service("user", func() {
 	Description("The user service provide user details.")
 
+	Method("get2", func() {
+		Description("Returns User details")
+		Result(User, func() {
+			View("v1")
+		})
+
+		HTTP(func() {
+			GET("/user2")
+			Response(StatusOK)
+		})
+	})
+
 	Method("get", func() {
 		Description("Returns User details")
-		Result(User)
+		Result(User, func() {
+			View("default")
+		})
 
 		HTTP(func() {
 			GET("/user")

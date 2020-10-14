@@ -7,6 +7,11 @@
 
 package server
 
+// Get2UserPath returns the URL path to the user service get2 HTTP endpoint.
+func Get2UserPath() string {
+	return "/user2"
+}
+
 // GetUserPath returns the URL path to the user service get HTTP endpoint.
 func GetUserPath() string {
 	return "/user"
